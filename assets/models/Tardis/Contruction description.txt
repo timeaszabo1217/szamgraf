@@ -1,0 +1,40 @@
+*                          .
+               .          .                        .       |       .
+                                                         --*--
+                              _________                    |
+         .               _|_ /_   _
+         _______       _  |  |_| |      .
+              | \  _  |_
+              |_/ |_|      .                                  .
+           _____  ____  _________    _____ _____________
+           \    \/    \/         \__/     V     ____    | 
+            \      _      /|      __      |    |____|   |         .
+    .        \____/ \___/  |_____|  |_____|_____________|
+
+             .                          .
+                                                         .
+                           *       .
+ :
+                                .                   .             .
+               *                  .
+♥ A "Doctor Who" című sorozatból a 10. doktor Tardisát modelleztem le, mint űreszköz ♥
+
+1. Felülethálóból csináltam egy alapot, E gyors billentyűvel csináltam emelkedőt, majd az oszlopokat. 
+Néhol igazítgattam a nyújtással, elrendezgettem a dolgokat.
+2. Megcsináltam az oldalfalat, egy felülethálóból kiindulva, amit a 'Modifier Properties' fülnél az 'Array' segítségével meg 4-szereztem.
+Lezártam ennek szerkesztését, majd megcsináltam az ablakokat, ahol kellett, ott használtam az 'Edge'-n belül a 'Subdivide' gombot. 
+Itt is alkalmaztam, majd E betűvel bentebb nyomtam a rácson belüli részt.
+3. Az oldalakat duplikáltam a Shift + D billentyűkombinációval, elhelyeztem őket forgatással, eltolással.
+4. Elkezdtem a tetejét, előszőr is a táblákat, egy lekerekített téglatestet nyújtottam, majd benyomtam E-vel picit.
+5. Erre jött a tető, nyújtottam, majd megint, majd skáláztam, hogy meredek legyen, utána újabb nyújtás a lámpa alatt.
+6. A lámpát cilinderekből csináltam, az alsó nagyobb cilindert duplikáltam, majd felosztottam és skáláztam.
+Kisebb cilindert is csináltam, majd ugyanúgy duplikálgattam. A középső fényes ezután jött.
+7. A telefon résznél van egy papír, ezt is ráhelyeztem, majd pár kilincset és kulcslyukat imitáló nyújtás végeztem.
+8. Kerestem texturákat, anyagokat az egészhez, amiket a "material" mappába mentettem le. A 'Material Properties' fülnél ügyködtem, kép alapú texturát választottam ki általában. 
+A fával kezdtem, mindent bevonva, majd fémet adtam hozzá külön kijelölgetve. 
+A papírt is kijelölve plusz textura hozzáadással szerkesztettem, használtam az 'UV Editing' felső fület, hogy valahogy azért álljon rajta a kép.
+9. A kislámpának és az ablakoknak 'Surface'-nek az 'Emission'-t adtam meg, majd beállítottam a fény erősségét.
+10. Végül elhelyeztem a színtérben a Tardist, mintha az űrt járná éppen, forgatással, eltolással.
+11. Elmentettem .blend formátumúként, majd kiexportáltam (File > Export > Wavefront(.obj)). Ez létrehozott egy Object (.obj) és egy Material (.mtl) fájlt.
+Az Object fájlt megnyitottam, mint szövegszerkesztő és kitöröltem minden l-lel (mint line) kezdödő sort.
+12. Betöltöttem az említett .obj és .mtl fájlokat a ThreeJS programba.

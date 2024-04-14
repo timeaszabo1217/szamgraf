@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang = "hu">
+
+<head>
+    <meta charset = utf-8>
+    <title>Szabó Tímea - JJMS9M</title>
+    <link rel="icon" href="assets/shortcut_icon.jpg">
+</head>
+<body>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+        tr {
+            font-size: 18px;
+        }
+        th {
+            width: 100px;
+        }
+        .text {
+            position: absolute;
+            margin: 0;
+            padding-left: 10px;
+            padding-top: 10px;
+            width: 300px;
+            text-align: left;
+            color: #76519c;
+            background: rgba(0, 0, 0, 0);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        #center {
+            text-align: center;
+        }
+        #info {
+            position: fixed;
+            top: 0;
+            right: 10px;
+            width: 350px;
+            height: 250px;
+            display: block;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+    <h2 class = "text">
+        Szabó Tímea<br>
+        JJMS9M<br>
+        Programtervező informatikus<br>
+        2022/2023<br>
+    </h2>
+    <div class = "text" id = "info">
+        <h2 id = "center">Informations</h2>
+        <table>
+            <tr>
+                <th>I</th>
+                <td> Hide or display 'Informations' panel</td>
+            </tr>
+            <tr>
+                <th>Left click</th>
+                <td> Look around</td>
+            </tr>
+            <tr>
+            <tr>
+                <th>Right click</th>
+                <td> Move</td>
+            </tr>
+            <tr>
+                <th>Roller</th>
+                <td> Zoom in/out</td>
+            </tr>
+            <tr>
+                <th>Controls panel</th>
+                <td> There's a couple functions, that you can try.</td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        const panel = document.getElementById('info');
+        panel.style.visibility = 'visible'
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'I' || event.key === 'i') {
+                if(panel.style.visibility === 'visible') {
+                    panel.style.visibility = 'hidden';
+                }
+                else {
+                    panel.style.visibility = 'visible';
+                }
+            }
+        });
+    </script>
+<script async src = "./dist/es-module-shims.js"></script>
+<script type = "importmap">
+{
+    "imports": {
+        "three": "./js-r143/build/three.module.js",
+        "OBJLoader": "./js-r143/examples/jsm/loaders/OBJLoader.js",
+        "MTLLoader": "./js-r143/examples/jsm/loaders/MTLLoader.js",
+        "lil-gui": "./js-r143/examples/jsm/libs/lil-gui.module.min.js",
+        "stats": "./js-r143/examples/jsm/libs/stats.module.js",
+        "trackballcontrols": "./js-r143/examples/jsm/controls/TrackballControls.js"
+    }
+}
+</script>
+<script type = "module">
+    import * as THREE from 'three';
+    import {OBJLoader} from 'OBJLoader';
+    import {MTLLoader} from 'MTLLoader';
+    import {TrackballControls} from 'trackballcontrols';
+    import {GUI} from 'lil-gui';
+    import Stats from 'stats';
+
+    let meshLoaded;
+    let WIDTH, HEIGHT, aspectRatio;
+    let renderer;
+    let scene, camera;
+    let geometry, material, mesh;
+    let controls;
+    let aLight, pLight, sLight;
+    const group = new THREE.Group();
+    const stats = Stats();
+    document.body.appendChild(stats.dom);
+
+    loader();
+    init();
+    animate();
+
+    function loader() {
+        let objLoader = new OBJLoader();
+        let mtlLoader = new MTLLoader();
+        mtlLoader.load('./assets/models/Tardis/SzaboTimea_JJMS9M.mtl', function(materials) {
+            materials.preload();
+            objLoader.setMaterials(materials).load('./assets/models/Tardis/SzaboTimea_JJMS9M.obj', function(object) {
+                meshLoaded = object;
+                object.traverse(function(child) {
+                    if (child instanceof THREE.Mesh) {
+                        child.position.set(10, 20, 10);
+                        child.rotation.x = 0.5;
+                        child.scale.set(0.2, 0.2, 0.2);
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                    scene.add(meshLoaded);
+                });
+            },
+            function(xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            function(error) {
+                console.log('Error');
+            });
+        },
+        function(xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        function(error) {
+            console.log('Error');
+        });
+    }
+
+    function init() {
+        HEIGHT = window.innerHeight;
+        WIDTH = window.innerWidth;
+        aspectRatio = WIDTH / HEIGHT;
+
+        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(WIDTH, HEIGHT);
+        renderer.setClearColor(0x000000);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+        camera.position.z = 15;
+        camera.lookAt(scene.position);
+
+        const texture = new THREE.TextureLoader().load('./assets/texture/moon.jpg');
+        const textureBump = new THREE.TextureLoader().load('./assets/texture/moon_bump.jpg');
+
+        geometry = new THREE.SphereGeometry(2.25, 20, 20);
+        material = new THREE.MeshPhysicalMaterial({color: '#519c53', wireframe: false, roughness: 0, metalness: 0, transmission: 1, ior: 1});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.set(0, 0, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.SphereGeometry(1.5, 20, 20);
+        material = new THREE.MeshPhysicalMaterial({color: '#17151a', wireframe: false, roughness: 0.25, metalness: 0});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position.z = -1;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.ConeGeometry(2, 3, 20);
+        material = new THREE.MeshPhysicalMaterial({color: '#17151a', wireframe: false, roughness: 0.25, metalness: 0});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(0, 0, 4.25);
+        mesh.rotation.x = 1.57;
+        mesh.scale.set(2, 3, 1);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.TorusGeometry(3.5, 0.5, 100, 100, 100);
+        material = new THREE.MeshPhongMaterial({color: '#44305c', wireframe: false});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.set(0, 0, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.TorusGeometry(7.5, 1, 100, 100);
+        material = new THREE.MeshPhysicalMaterial({color: '#17151a', wireframe: false, roughness: 0.25, metalness: 0});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.BoxGeometry(3, 6, 0.75);
+        material = new THREE.MeshPhysicalMaterial({color: '#519c53', wireframe: false, roughness: 0, metalness: 0, transmission: 1, ior: 2});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.scale.set(1, 1, 1);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.BoxGeometry(15, 3, 0.75);
+        material = new THREE.MeshPhongMaterial({color: '#44305c', wireframe: false});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.scale.set(1, 1, 1);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.CylinderGeometry(0.25, 0.25, 5, 50);
+        material = new THREE.MeshPhysicalMaterial({color: '#b4a1cc', wireframe: false, roughness: 0, metalness: 0, transmission: 1, ior: 2});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.z = 0.69;
+        mesh.position.set(-3, 3, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.CylinderGeometry( .25, 0.25, 5, 50);
+        material = new THREE.MeshPhysicalMaterial({color: '#b4a1cc', wireframe: false, roughness: 0, metalness: 0, transmission: 1, ior: 2});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.z = -0.69;
+        mesh.position.set(3, 3, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.CylinderGeometry(0.25, 0.25, 5, 50);
+        material = new THREE.MeshPhysicalMaterial({color: '#b4a1cc', wireframe: false, roughness: 0, metalness: 0, transmission: 1, ior: 2});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.z = 0.69;
+        mesh.position.set(3, -3, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.CylinderGeometry(0.25, 0.25, 5, 50);
+        material = new THREE.MeshPhysicalMaterial({color: '#b4a1cc', wireframe: false, roughness: 0, metalness: 0, transmission: 1, ior: 2});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.z = -0.69;
+        mesh.position.set(-3, -3, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.CylinderGeometry(0.25, 0.25, 5, 50);
+        material = new THREE.MeshPhysicalMaterial({color: '#b4a1cc', wireframe: false, roughness: 0, metalness: 0, transmission: 1, ior: 2});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(0, 5, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.CylinderGeometry(0.25, 0.25, 5, 50);
+        material = new THREE.MeshPhysicalMaterial({color: '#b4a1cc', wireframe: false, roughness: 0, metalness: 0, transmission: 1, ior: 2});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(0, -5, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        group.add(mesh);
+
+        geometry = new THREE.SphereGeometry(25, 20, 20);
+        material = new THREE.MeshPhongMaterial({map: texture, bumpMap: textureBump, bumpScale: 1, wireframe: false});
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(0, 0, -100);
+        mesh.castShadow = false;
+        mesh.receiveShadow = true;
+        scene.add(mesh);
+
+        group.rotation.set(5, 25, 0);
+        group.shininess = 60.0;
+
+        scene.add(group);
+
+        aLight = new THREE.AmbientLight('#ffffff', 0.5);
+        scene.add(aLight);
+
+        pLight = new THREE.PointLight('#bda5d4', 0.8);
+        pLight.position.set(0, -20, 2);
+        pLight.distance = 50;
+        pLight.target = mesh;
+        scene.add(pLight);
+
+        sLight = new THREE.SpotLight('#bbd9a9', 0.8);
+        sLight.position.set(5, 2, 30);
+        sLight.distance = 150;
+        sLight.target = mesh;
+        sLight.angle = Math.PI / 20;
+        sLight.penumbra = 0.8;
+        sLight.power = 5;
+        sLight.castShadow = true;
+        scene.add(sLight);
+
+        window.addEventListener('resize', handleWindowResize, false);
+
+        controls = new TrackballControls(camera, renderer.domElement);
+        controls.rotateSpeed = 5.0;
+        controls.panSpeed = 1.0;
+    }
+
+    function handleWindowResize() {
+        HEIGHT = window.innerHeight;
+        WIDTH = window.innerWidth;
+        // console.log('WIDTH=' + WIDTH + '; HEIGHT=' + HEIGHT);
+        renderer.setSize(WIDTH, HEIGHT);
+        aspectRatio = WIDTH / HEIGHT;
+        camera.aspect = aspectRatio;
+        camera.updateProjectionMatrix();
+
+        render();
+    }
+
+    function addStar() {
+        const geometry = new THREE.SphereGeometry(0.2, 50, 50);
+        const material = new THREE.MeshPhysicalMaterial({color: 0xffffff, roughness: 10, clearcoat: 1});
+        const star = new THREE.Mesh(geometry, material);
+        star.castShadow = false;
+        star.receiveShadow = false;
+        const [x, y, z] = Array(3).fill(1).map(() => THREE.MathUtils.randFloatSpread(100));
+
+        star.position.set(x, y, z);
+
+        scene.add(star);
+    }
+    Array(150).fill(1).forEach(addStar);
+
+    let pLightHelper = new THREE.PointLightHelper(pLight, 0.25);
+    scene.add(pLightHelper);
+    let sLightHelper = new THREE.SpotLightHelper(sLight, 0xbda5d4);
+    scene.add(sLightHelper);
+
+    const background = {
+        color: '#050308'
+    };
+    scene.background = new THREE.Color(background.color);
+
+    const dayOrNight = {
+        result: 'night'
+    };
+
+    const gui = new GUI({width: 350})
+
+    gui.add(dayOrNight, 'result', ['day', 'night']).name('Day/Night').onChange(function() {
+        if(dayOrNight.result === 'day') {
+            dayOrNight.result = 'day';
+            sLight = new THREE.SpotLight('#c7b1e3', 0.8);
+            sLight.position.set(5, 2, 30);
+            sLight.distance = 150;
+            sLight.target = mesh;
+            sLight.angle = Math.PI / 2;
+            sLight.penumbra = 0.8;
+            sLight.power = 5;
+            sLight.castShadow = true;
+            scene.background.set('#150d1f');
+            scene.add(sLight);
+        }
+        else if(dayOrNight.result === 'night') {
+            dayOrNight.result = 'night';
+            scene.background.set('#050308');
+            scene.remove(sLight);
+        }
+    })
+
+    const geometry1Folder = gui.addFolder('Space Station');
+    geometry1Folder.open();
+    const position1Folder = geometry1Folder.addFolder('Position');
+    position1Folder.add(group.position, 'x', -10, 10, 0.01).name('X Position')
+    position1Folder.add(group.position, 'z', -10, 10, 0.01).name('Z Position')
+    position1Folder.open();
+    const rotation1Folder = geometry1Folder.addFolder('Rotation');
+    rotation1Folder.add(group.rotation, 'x', 0, Math.PI * 2).name('X Rotation')
+    rotation1Folder.open();
+    const scale1Folder = geometry1Folder.addFolder('Scale');
+    scale1Folder.add(group.scale, 'x', 0.1, 2).name('X Scale')
+    scale1Folder.add(group.scale, 'y', 0.1, 2).name('Y Scale')
+    scale1Folder.add(group.scale, 'z', 0.1, 2).name('Z Scale')
+    scale1Folder.open();
+
+    const geometry2Folder = gui.addFolder('Moon');
+    geometry2Folder.open();
+    const position2Folder = geometry2Folder.addFolder('Position');
+    position2Folder.add(mesh.position, 'x', -10, 10, 0.01).name('X Position');
+    position2Folder.add(mesh.position, 'y', -10, 10, 0.01).name('Y Position');
+    position2Folder.open();
+    const scale2Folder = geometry2Folder.addFolder('Scale');
+    scale2Folder.add(mesh.scale, 'x', 0.5, 3).name('X Scale');
+    scale2Folder.add(mesh.scale, 'y', 0.5, 3).name('Y Scale');
+    scale2Folder.add(mesh.scale, 'z', 0.5, 3).name('Z Scale');
+    geometry2Folder.add(mesh.rotation, 'y', ).name('Stop Animation');
+    scale2Folder.open();
+
+    const lightFolder = gui.addFolder('Lights');
+    lightFolder.open();
+    const pointLightFolder = lightFolder.addFolder('Point Light');
+    pointLightFolder.add(pLight.position, 'y', -20, 20).name('Y Position');
+    pointLightFolder.add(pLightHelper, 'visible', false).name('Wireframe');
+    pointLightFolder.add(pLight, 'visible', false).name('Visible');
+    const spotLightFolder = lightFolder.addFolder('Spot Light');
+    spotLightFolder.add(sLight.position, 'x', -20, 20).name('X Position');
+    spotLightFolder.add(sLight.position, 'y', -20, 20).name('Y Position');
+    spotLightFolder.add(sLight.position, 'z', -20, 50).name('Z Position');
+    spotLightFolder.add(sLight, 'intensity', 0, 5, 0.01).name('Intensity');
+    spotLightFolder.add(sLightHelper, 'visible', false).name('Wireframe');
+    spotLightFolder.add(sLight, 'visible', false).name('Visible');
+
+    const backgroundFolder = gui.addFolder('Background');
+    backgroundFolder.addColor(background, 'color').name('Color').onChange(function(value) {
+        scene.background.set(value);
+    });
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        mesh.rotation.y = Math.sin(Date.now() * 0.00001) * 10;
+        group.rotation.z = Math.sin(Date.now() * 0.00001) * 20;
+        group.position.y = Math.sin(Date.now() * 0.001) * 0.5;
+
+        controls.update();
+        controls.minDistance = 10;
+        controls.maxDistance = 50;
+
+        stats.update();
+
+        render();
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+    }
+</script>
+</body>
+</html>

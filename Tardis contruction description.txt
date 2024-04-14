@@ -1,0 +1,34 @@
+
+    ——————　ᴛᴀʀᴅɪꜱ　——————
+
+
+✦ Felülethálóból csináltam egy alapot, E gyors billentyűvel csináltam emelkedőt, majd az oszlopokat. 
+    Néhol igazítgattam a nyújtással, elrendezgettem a dolgokat.
+
+✦ Megcsináltam az oldalfalat, egy felülethálóból kiindulva, amit a 'Modifier Properties' fülnél az 'Array' segítségével meg 4-szereztem.
+    Lezártam ennek szerkesztését, majd megcsináltam az ablakokat, ahol kellett, ott használtam az 'Edge'-n belül a 'Subdivide' gombot. 
+    Itt is alkalmaztam, majd E betűvel bentebb nyomtam a rácson belüli részt.
+
+✦ Az oldalakat duplikáltam a Shift + D billentyűkombinációval, elhelyeztem őket forgatással, eltolással.
+
+✦ Elkezdtem a tetejét, előszőr is a táblákat, egy lekerekített téglatestet nyújtottam, majd benyomtam E-vel picit.
+
+✦ Erre jött a tető, nyújtottam, majd megint, majd skáláztam, hogy meredek legyen, utána újabb nyújtás a lámpa alatt.
+
+✦ A lámpát cilinderekből csináltam, az alsó nagyobb cilindert duplikáltam, majd felosztottam és skáláztam.
+    Kisebb cilindert is csináltam, majd ugyanúgy duplikálgattam. A középső fényes ezután jött.
+
+✦ A telefon résznél van egy papír, ezt is ráhelyeztem, majd pár kilincset és kulcslyukat imitáló nyújtás végeztem.
+
+✦ Kerestem texturákat, anyagokat az egészhez, amiket a "material" mappába mentettem le. A 'Material Properties' fülnél ügyködtem, kép alapú texturát választottam ki általában. 
+    A fa textúrával kezdtem, mindent bevonva, majd fémet adtam hozzá külön kijelölgetve. 
+    A papírt is kijelölve plusz textura hozzáadással szerkesztettem, használtam az 'UV Editing' felső fület, hogy valahogy azért álljon rajta a kép.
+
+✦ A kislámpának és az ablakoknak 'Surface'-nek az 'Emission'-t adtam meg, majd beállítottam a fény erősségét.
+
+✦ Végül elhelyeztem a színtérben a Tardist, mintha az űrt járná éppen, forgatással, eltolással.
+
+✦ Elmentettem .blend formátumként, majd kiexportáltam (File > Export > Wavefront(.obj)). Ez létrehozott egy Object (.obj) és egy Material (.mtl) fájlt.
+    Az Object fájlt megnyitottam, mint szövegszerkesztő és kitöröltem minden l-lel (mint line) kezdödő sort.
+
+✦ Betöltöttem az említett .obj és .mtl fájlokat a ThreeJS programba.
